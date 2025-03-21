@@ -43,6 +43,7 @@ Future<Character> loadCharacterStats() async {
       health,
       attackingPower,
       defensivePower,
+      false,
     );
     return character;
   } catch (e) {

@@ -6,8 +6,15 @@ class Character {
   int stamina;
   int attackingPower;
   int defensivePower;
+  bool isUsingItem;
 
-  Character(this.name, this.stamina, this.attackingPower, this.defensivePower);
+  Character(
+    this.name,
+    this.stamina,
+    this.attackingPower,
+    this.defensivePower,
+    this.isUsingItem,
+  );
 
   // 몬스터에게 공격을 가하여 피해를 입힙니다.
   // 몬스터에게 입힌 데미지를 반환합니다.
@@ -19,6 +26,24 @@ class Character {
       damage = 0;
     }
     return damage;
+  }
+
+  // 아이템 사용
+  int attackWithItem(Monster monster) {
+    if (isUsingItem) {
+      // item을 이미 사용했으면
+      print('이미 아이템을 사용했습니다.');
+      return -1;
+    } else {
+      print('공격력이 2배가 되었습니다! (공격력 : ${this.attackingPower * 2})');
+      int damage = this.attackingPower * 2 - monster.defensivePower;
+      print('${monster.name}에게 $damage의 데미지를 입혔습니다.');
+      if (damage < 0) {
+        damage = 0;
+      }
+      this.isUsingItem = true;
+      return damage;
+    }
   }
 
   //방어 시 0~100 중 랜덤값으로 체력이 충전됩니다.

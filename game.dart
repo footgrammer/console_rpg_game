@@ -60,16 +60,25 @@ class Game {
         continueGame = false;
       } else {
         Monster monster = getRandomMonster();
+        int playCount = 1; // 처음 시작이 첫 번째 판이기 때문에 1로 설정
 
         while (!isMonsterDead) {
           print(' ');
           print('${character.name}의 턴');
-          stdout.write('행동을 선택하세요. (1: 공격, 2: 방어) : ');
+          stdout.write('행동을 선택하세요. (1: 공격, 2: 방어, 3: 아이템 사용) : ');
           String? action = stdin.readLineSync();
 
           if (action == '1') {
+            // 3턴마다 몬스터의 방어력이 2씩 증가
+            if (playCount % 3 == 0 && playCount != 0) {
+              monster.defensivePower += 2;
+              print(
+                '${monster.name}의 방어력이 증가했습니다. 현재 방어력 : ${monster.defensivePower}',
+              );
+            }
             // 공격을 선택하면.
             int damage = character.attackMonster(monster);
+
             monster.stamina -= damage;
             print('${monster.name}의 체력 : ${monster.stamina}');
             if (monster.stamina <= 0) {
@@ -83,6 +92,7 @@ class Game {
               character.stamina -= damage;
               character.showStatus();
               monster.showStatus();
+              playCount++;
               if (character.stamina <= 0) {
                 // 캐릭터가 죽으면
                 isCharacterDead = true;
@@ -93,6 +103,13 @@ class Game {
               }
             }
           } else if (action == '2') {
+            // 3턴마다 몬스터의 방어력이 2씩 증가
+            if (playCount % 3 == 0 && playCount != 0) {
+              monster.defensivePower += 2;
+              print(
+                '${monster.name}의 방어력이 증가했습니다. 현재 방어력 : ${monster.defensivePower}',
+              );
+            }
             // 방어를 입력하면 체력충전
             character.stamina += character.defend();
             if (character.stamina > originalStamina) {
@@ -105,6 +122,7 @@ class Game {
             character.stamina -= damage;
             character.showStatus();
             monster.showStatus();
+            playCount++;
             if (character.stamina <= 0) {
               // 캐릭터가 죽으면
               isCharacterDead = true;
@@ -112,6 +130,43 @@ class Game {
               this.saveResult(character, '패배');
               print('게임이 종료됩니다.');
               break;
+            }
+          } else if (action == '3') {
+            // 3턴마다 몬스터의 방어력이 2씩 증가
+            if (playCount % 3 == 0 && playCount != 0) {
+              monster.defensivePower += 2;
+              print(
+                '${monster.name}의 방어력이 증가했습니다. 현재 방어력 : ${monster.defensivePower}',
+              );
+            }
+            //아이템을 사용하면
+            int damage = character.attackWithItem(monster);
+            if (damage == -1) {
+              // 아이템을 이미 사용했다면
+            } else {
+              monster.stamina -= damage;
+              print('${monster.name}의 체력 : ${monster.stamina}');
+              if (monster.stamina <= 0) {
+                print('${monster.name}를 물리쳤습니다.');
+                character.showStatus();
+                deadMonsters++;
+                monsterLists.remove(monster);
+                isMonsterDead = true;
+              } else {
+                int damage = monster.attackCharacter(character);
+                character.stamina -= damage;
+                character.showStatus();
+                monster.showStatus();
+                playCount++;
+                if (character.stamina <= 0) {
+                  // 캐릭터가 죽으면
+                  isCharacterDead = true;
+                  print('${character.name}이(가) 죽었습니다.');
+                  this.saveResult(character, '패배');
+                  print('게임이 종료됩니다.');
+                  break;
+                }
+              }
             }
           } else {
             // 잘못된 입력
