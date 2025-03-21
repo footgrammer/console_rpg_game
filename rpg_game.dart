@@ -5,7 +5,7 @@ import 'monster.dart';
 import 'game.dart';
 import 'dart:core';
 
-String? getCharacterName() {
+String getCharacterName() {
   bool isCorrectInput = false;
   while (!isCorrectInput) {
     RegExp nameRegulation = RegExp(r"^[ㄱ-ㅎ가-힣a-zA-Z]*$");
@@ -24,7 +24,7 @@ String? getCharacterName() {
       print('');
     }
   }
-  return null;
+  return '';
 }
 
 Future<Character> loadCharacterStats() async {
@@ -34,7 +34,7 @@ Future<Character> loadCharacterStats() async {
     final stats = contents.split(',');
     if (stats.length != 3) throw FormatException('잘못된 형식의 파일입니다.');
 
-    String name = getCharacterName()!;
+    String name = getCharacterName();
     int health = int.parse(stats[0]);
     int attackingPower = int.parse(stats[1]);
     int defensivePower = int.parse(stats[2]);
@@ -43,7 +43,6 @@ Future<Character> loadCharacterStats() async {
       health,
       attackingPower,
       defensivePower,
-      false,
     );
     return character;
   } catch (e) {
@@ -55,22 +54,24 @@ Future<Character> loadCharacterStats() async {
 Future<List<Monster>> loadMonsterStats(Character character) async {
   try {
     final file = await File('./gameStats/monsters.txt');
-    final contents = file.readAsStringSync();
-    final stats = contents.split(',');
-    if (stats.length % 2 == 1) throw FormatException('잘못된 형식의 파일입니다.');
-
+    List<String> lines = file.readAsLinesSync();
     List<Monster> monsters = [];
-    for (int i = 0; i < stats.length; i += 2) {
-      String name = stats[i];
-      int health = int.parse(stats[i + 1]);
+
+    for (String line in lines) {
+      List<String> monsterInfo = line.split(',');
+      if (monsterInfo.length % 2 == 1) throw FormatException('잘못된 형식의 파일입니다.');
+
+      String name = monsterInfo[0];
+      int health = int.parse(monsterInfo[1]);
       int attackingPower = Random().nextInt(100) + character.defensivePower;
-      int defensivePower = 0;
-      Monster monster = Monster(name, health, attackingPower, defensivePower);
+
+      Monster monster = Monster(name, health, attackingPower);
       monsters.add(monster);
     }
+
     return monsters;
   } catch (e) {
-    print('캐릭터 데이터를 불러오는 데 실패했습니다 : $e');
+    print('몬스터 데이터를 불러오는 데 실패했습니다 : $e');
     exit(1);
   }
 }
@@ -82,6 +83,6 @@ void main() async {
     Game game = Game(character, monsters);
     game.startGame();
   } catch (e) {
-    print('캐릭터 데이터를 불러오는 데 실패했습니다. : $e');
+    print('게임을 실행하는 데 실패했습니다. : $e');
   }
 }

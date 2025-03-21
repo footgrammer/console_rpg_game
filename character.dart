@@ -6,15 +6,9 @@ class Character {
   int stamina;
   int attackingPower;
   int defensivePower;
-  bool isUsingItem;
+  bool isUsingItem = false;
 
-  Character(
-    this.name,
-    this.stamina,
-    this.attackingPower,
-    this.defensivePower,
-    this.isUsingItem,
-  );
+  Character(this.name, this.stamina, this.attackingPower, this.defensivePower);
 
   // 몬스터에게 공격을 가하여 피해를 입힙니다.
   // 몬스터에게 입힌 데미지를 반환합니다.

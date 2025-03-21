@@ -4,9 +4,9 @@ class Monster {
   String name;
   int stamina;
   int maxAttackingPower;
-  int defensivePower;
+  int defensivePower = 0;
 
-  Monster(this.name, this.stamina, this.maxAttackingPower, this.defensivePower);
+  Monster(this.name, this.stamina, this.maxAttackingPower);
 
   int attackCharacter(Character character) {
     print('  ');
