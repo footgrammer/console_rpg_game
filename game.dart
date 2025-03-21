@@ -17,8 +17,24 @@ class Game {
     this.originalStamina = character.stamina;
   }
 
+  // 30% 확률로 true 리턴
+  bool hasBonusStamina() {
+    int percent = Random().nextInt(100);
+    if (percent < 30) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   void startGame() {
     print('게임을 시작합니다.');
+    if (hasBonusStamina()) {
+      // 보너스 체력이 당첨되면
+      print('[당첨] 보너스 체력 +10이 제공되었습니다.');
+      character.stamina += 10;
+    }
+
     print(
       '${character.name} - 체력 : ${character.stamina}, 공격력 : ${character.attackingPower}, 방어력 : ${character.defensivePower}',
     );
@@ -158,9 +174,8 @@ class Game {
     } else {
       answer = answer.trim();
     }
-    switch (result) {
-      case "네":
-        print('haha');
+    switch (answer) {
+      case '네':
         String contents = '''
     이름 : ${character.name}
     체력 : ${character.stamina}
@@ -172,11 +187,9 @@ class Game {
         );
         file.writeAsStringSync(contents);
         break;
-      case "아니오":
+      case '아니오':
         break;
       default:
-        print('$answer 바보');
-        print(answer == '네');
         print('잘못된 입력입니다.');
         print('');
         saveResult(character, result);

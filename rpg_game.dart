@@ -66,9 +66,6 @@ Future<List<Monster>> loadMonsterStats(Character character) async {
       int defensivePower = 0;
       Monster monster = Monster(name, health, attackingPower, defensivePower);
       monsters.add(monster);
-      print(
-        '몬스터 ${monster.name} : 체력 ${monster.stamina}, 공격력 ${monster.maxAttackingPower}, 방어력 ${monster.defensivePower}',
-      );
     }
     return monsters;
   } catch (e) {

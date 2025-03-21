@@ -1,5 +1,4 @@
 import 'monster.dart';
-import 'dart:io';
 import 'dart:math';
 
 class Character {
