@@ -38,8 +38,9 @@ class Game {
       if (monsterLists.length == 0) {
         print('[알림] 남아 있는 몬스터가 없습니다!');
         print('축하드립니다! 게임에서 승리하셨습니다!');
-        print('게임을 종료합니다.');
         this.saveResult(character, '승리');
+        print('게임을 종료합니다.');
+
         continueGame = false;
       } else {
         Monster monster = getRandomMonster();
@@ -70,6 +71,7 @@ class Game {
                 // 캐릭터가 죽으면
                 isCharacterDead = true;
                 print('${character.name}이(가) 죽었습니다.');
+                this.saveResult(character, '패배');
                 print('게임이 종료됩니다.');
                 break;
               }
@@ -91,6 +93,7 @@ class Game {
               // 캐릭터가 죽으면
               isCharacterDead = true;
               print('${character.name}이(가) 죽었습니다.');
+              this.saveResult(character, '패배');
               print('게임이 종료됩니다.');
               break;
             }
@@ -121,6 +124,7 @@ class Game {
                 case '아니오':
                   correctAnswer = true;
                   continueGame = false;
+                  this.saveResult(character, '게임중지');
                   print('게임이 종료되었습니다.');
                 default:
                   print('잘못된 입력입니다. 다시 입력해 주세요.');
@@ -144,15 +148,39 @@ class Game {
   }
 
   void saveResult(Character character, String result) {
-    String contents = '''
+    stdout.write('결과를 저장하겠습니까? (네/아니오) : ');
+    String? answer = stdin.readLineSync();
+    if (answer == null) {
+      print(answer);
+      print('잘못된 입력입니다.');
+      print('');
+      saveResult(character, result);
+    } else {
+      answer = answer.trim();
+    }
+    switch (result) {
+      case "네":
+        print('haha');
+        String contents = '''
     이름 : ${character.name}
     체력 : ${character.stamina}
     결과 : $result
     ''';
-    var now = DateTime.now();
-    var file = File(
-      './results/${now.year.toString()}-${now.month.toString()}-${now.day.toString()}-${character.name}.txt',
-    );
-    file.writeAsStringSync(contents);
+        var now = DateTime.now();
+        var file = File(
+          './results/${now.year.toString()}-${now.month.toString()}-${now.day.toString()}-${character.name}.txt',
+        );
+        file.writeAsStringSync(contents);
+        break;
+      case "아니오":
+        break;
+      default:
+        print('$answer 바보');
+        print(answer == '네');
+        print('잘못된 입력입니다.');
+        print('');
+        saveResult(character, result);
+        break;
+    }
   }
 }
